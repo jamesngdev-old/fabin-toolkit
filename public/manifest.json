@@ -1,0 +1,29 @@
+{
+    "short_name": "Fabin Toolkit",
+    "name": "Fabin Toolkit",
+    "version": "1.0.0",
+    "description": "Tools for Facebook and Instagram",
+    "manifest_version": 2,
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+    "chrome_url_overrides": {
+        "newtab": "index.html"
+    },
+    "permissions": [
+        "http://*/*",
+        "https://*/*",
+        "https://www.facebook.com/api/graphql/*",
+        "notifications",
+        "cookies",
+        "webRequest",
+        "webRequestBlocking",
+        "storage",
+        "unlimitedStorage",
+        "tabs"
+    ],
+    "browser_action": {},
+    "content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'"
+}
