@@ -12,6 +12,9 @@
     "chrome_url_overrides": {
         "newtab": "index.html"
     },
+    "icons": {
+        "128": "icon128.png"
+    },
     "permissions": [
         "http://*/*",
         "https://*/*",
