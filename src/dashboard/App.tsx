@@ -1,9 +1,12 @@
 import React from "react"
 import ReactDOM from "react-dom"
 
+import "./index.less"
+import { DefaultLayout } from "./layout"
+
 function App() {
   return (
-    <h1>Hello world app</h1>
+    <DefaultLayout />
   )
 }
 

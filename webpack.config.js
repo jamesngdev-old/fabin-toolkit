@@ -40,7 +40,7 @@ module.exports = {
     rules: [
       {
         test: /\.(ts|tsx)$/,
-        use: ["ts-loader", "eslint-loader"],
+        use: ["ts-loader"],
         exclude: /node_modules/
       },
       {
@@ -49,11 +49,29 @@ module.exports = {
           MiniCssExtractPlugin.loader,
           {
             loader: "css-loader",
-            options: { sourceMap: isDevelopment ? true : false }
+            options: { sourceMap: isDevelopment }
           },
           {
             loader: "sass-loader",
-            options: { sourceMap: isDevelopment ? true : false }
+            options: { sourceMap: isDevelopment }
+          }
+        ]
+      },
+      {
+        test: /\.less$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: { sourceMap: isDevelopment }
+          },
+          {
+            loader: "less-loader",
+            options: {
+              lessOptions: {
+                javascriptEnabled: true
+              }
+            }
           }
         ]
       },
