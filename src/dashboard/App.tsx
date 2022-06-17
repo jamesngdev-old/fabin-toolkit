@@ -10,5 +10,4 @@ function App() {
   )
 }
 
-// Render component App vào #root element
 ReactDOM.render(<App />, document.getElementById("root"))
