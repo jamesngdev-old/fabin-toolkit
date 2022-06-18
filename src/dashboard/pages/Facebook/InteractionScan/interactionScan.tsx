@@ -1,8 +1,15 @@
-import React from "react"
-import { getFacebookCookies } from "@helpers/cookie"
+import React from 'react';
+import Facebook from '@helpers/facebook';
 
 export default function InteractionScan() {
-
-  const cookie = getFacebookCookies();
-  return <h1>Interaction scan </h1>
+    return (
+        <button
+            onClick={() => {
+                const facebook = new Facebook();
+                facebook.init();
+            }}
+        >
+            Click me
+        </button>
+    );
 }

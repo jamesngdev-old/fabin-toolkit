@@ -1,5 +1,5 @@
 export default function useInteractionScan() {
-  return {
-    isLoading: true
-  }
+    return {
+        isLoading: true,
+    };
 }

@@ -1,1 +1,1 @@
-export { default } from "./interactionScan"
+export { default } from './interactionScan';
