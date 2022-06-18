@@ -12,8 +12,8 @@ const HtmlWebpackSelectAssetsPlugin = require("html-webpack-select-assets-plugin
 module.exports = {
   mode: isDevelopment ? "development" : "production",
   entry: {
-    dashboard: "./src/dashboard/index.ts",
-    background: "./src/background/index.js"
+    dashboard: "./src/dashboard/index.tsx",
+    background: "./src/background/index.ts"
   },
   devtool: isDevelopment ? "inline-source-map" : false,
   plugins: [
