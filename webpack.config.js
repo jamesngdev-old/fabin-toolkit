@@ -4,6 +4,7 @@ const webpack = require("webpack")
 const Dotenv = require("dotenv-webpack")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
+const ESLintPlugin = require("eslint-webpack-plugin")
 
 require("dotenv").config()
 const isDevelopment = process.env.NODE_ENV === "development"
@@ -22,6 +23,7 @@ module.exports = {
         { from: "public", to: "" }
       ]
     }),
+    new ESLintPlugin(),
     new Dotenv(),
     new HtmlWebpackPlugin({
       template: "public/index.html"
@@ -102,10 +104,14 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".jsx", ".js"],
+    extensions: [".ts", ".js", ".tsx"],
     alias: {
-      "@dashboard": path.resolve("src/dashboard"),
-      "@background": path.resolve("src/background")
+      "@components": path.resolve(__dirname, "./src/dashboard/components"),
+      "@hooks": path.resolve(__dirname, "./src/dashboard/hooks"),
+      "@pages": path.resolve(__dirname, "./src/dashboard/pages"),
+      "@redux": path.resolve(__dirname, "./src/dashboard/redux"),
+      "@helpers": path.resolve(__dirname, "./src/dashboard/helpers"),
+      "@background": path.resolve(__dirname, "./src/background")
     }
   },
   output: {

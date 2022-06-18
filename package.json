@@ -2,7 +2,7 @@
     "name": "fabin-toolkit",
     "version": "1.0.0",
     "description": "Tools for Facebook and Instagram",
-    "main": "index.ts",
+    "main": "index.js",
     "repository": "git@github.com:JamesNgDev/fabin-toolkit.git",
     "author": "James Ng Dev <james.ng.dev@gmail.com>",
     "license": "MIT",
@@ -20,9 +20,10 @@
         "css-loader": "^6.7.1",
         "dotenv": "^16.0.1",
         "dotenv-webpack": "^7.1.0",
-        "eslint": "^8.17.0",
+        "eslint": "^8.18.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-config-react-app": "^7.0.1",
+        "eslint-import-resolver-alias": "^1.1.2",
         "eslint-loader": "^4.0.2",
         "eslint-plugin-flowtype": "^8.0.3",
         "eslint-plugin-import": "^2.26.0",
@@ -30,6 +31,7 @@
         "eslint-plugin-prettier": "^4.0.0",
         "eslint-plugin-react": "^7.30.0",
         "eslint-plugin-react-hooks": "^4.6.0",
+        "eslint-webpack-plugin": "^3.1.1",
         "file-loader": "^6.2.0",
         "html-webpack-plugin": "^5.5.0",
         "html-webpack-select-assets-plugin": "^0.1.0",
@@ -60,13 +62,18 @@
     "dependencies": {
         "@ant-design/icons": "^4.7.0",
         "@reduxjs/toolkit": "^1.8.2",
+        "@types/chrome": "^0.0.190",
         "@types/lodash": "^4.14.182",
         "antd": "^4.21.3",
+        "axios": "^0.27.2",
         "less-loader": "^11.0.0",
         "lodash": "^4.17.21",
         "react": "17.0.2",
         "react-dom": "17.0.2",
         "react-redux": "^8.0.2",
         "react-router-dom": "^6.3.0"
+    },
+    "browser": {
+        "[module-name]": false
     }
 }

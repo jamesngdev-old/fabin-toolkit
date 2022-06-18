@@ -9,7 +9,27 @@
         "allowJs": true,
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
-        "baseUrl": "."
+        "baseUrl": ".",
+        "removeComments": true,
+        "paths": {
+            "@helpers/*": [
+                "src/dashboard/helpers/*"
+            ],
+            "@hooks/*": [
+                "src/dashboard/hooks/*"
+            ],
+            "@components/*": [
+                "src/dashboard/components/*"
+            ],
+            "@pages/*": [
+                "src/dashboard/pages/*"
+            ],
+            "@redux/*": [
+                "src/dashboard/redux/*"
+            ]
+        }
     },
-    "include": ["src/**/*"]
+    "include": [
+        "src/**/*"
+    ]
 }
