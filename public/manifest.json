@@ -3,30 +3,26 @@
     "name": "Fabin Toolkit",
     "version": "1.0.0",
     "description": "Tools for Facebook and Instagram",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "background": {
-        "scripts": [
-            "background.js"
-        ]
-    },
-    "chrome_url_overrides": {
-        "newtab": "index.html"
+        "service_worker": "background-worker.js"
     },
     "icons": {
         "128": "icon128.png"
     },
     "permissions": [
-        "http://*/*",
-        "https://*/*",
-        "https://www.facebook.com/api/graphql/*",
         "notifications",
         "cookies",
         "webRequest",
-        "webRequestBlocking",
         "storage",
         "unlimitedStorage",
-        "tabs"
+        "tabs",
+        "activeTab",
+        "tabs",
+        "declarativeNetRequest"
     ],
-    "browser_action": {},
-    "content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'"
+    "host_permissions": [
+        "*://*.facebook.com/api/graphql*"
+    ],
+    "action": {}
 }

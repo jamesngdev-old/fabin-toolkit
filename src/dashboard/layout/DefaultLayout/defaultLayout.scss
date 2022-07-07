@@ -20,3 +20,16 @@
 .ant-layout {
     height: 100vh;
 }
+
+.nav_profile {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    align-content: center;
+    height: 100%;
+    gap: 10px;
+    h5 {
+        color: white;
+        padding-right: 20px;
+    }
+}

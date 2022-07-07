@@ -6,7 +6,6 @@ export default function InteractionScan() {
         <button
             onClick={() => {
                 const facebook = new Facebook();
-                facebook.init();
             }}
         >
             Click me
