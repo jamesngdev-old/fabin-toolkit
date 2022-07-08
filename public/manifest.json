@@ -19,7 +19,8 @@
         "tabs",
         "activeTab",
         "tabs",
-        "declarativeNetRequest"
+        "declarativeNetRequest",
+        "webRequestBlocking"
     ],
     "host_permissions": [
         "*://*.facebook.com/api/graphql*"

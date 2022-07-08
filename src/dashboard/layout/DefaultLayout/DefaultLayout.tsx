@@ -1,6 +1,6 @@
 import { FacebookFilled, HomeOutlined } from '@ant-design/icons';
-import { Avatar, Layout, Menu, Spin, Typography } from 'antd';
-import React, { useEffect } from 'react';
+import { Avatar, Layout, Menu, PageHeader, Spin, Typography } from 'antd';
+import React from 'react';
 import { HashRouter as Router, Link, Route, Routes } from 'react-router-dom';
 import Dashboard from '@pages/Dashboard';
 import InteractionScan from '@pages/Facebook/InteractionScan';
@@ -103,6 +103,7 @@ const DefaultLayout: React.FC = observer(() => {
                             </Title>
                         </div>
                     </Header>
+
                     <Content style={{ margin: '24px 16px 0' }}>
                         <div
                             className="site-layout-background"
