@@ -1,6 +1,8 @@
-import React from 'react';
-import { Modal } from 'antd';
+import React, { useMemo } from 'react';
+import { Avatar, Image, Modal, Typography } from 'antd';
 import { FriendInfo } from '@helpers/facebook';
+
+const { Text } = Typography;
 
 export interface IProps {
     isShow?: boolean;
@@ -22,7 +24,29 @@ export default function ConfirmDialog(props: IProps) {
         readyToRemoveFriends,
     } = props;
 
-    console.log(readyToRemoveFriends);
+    const friendList = useMemo(() => {
+        return readyToRemoveFriends.map(friend => {
+            return (
+                <div className="review-item">
+                    <Avatar
+                        size={100}
+                        src={
+                            <Image
+                                src={friend.profile_picture.uri}
+                                style={{ width: 100 }}
+                            />
+                        }
+                    />
+
+                    <Text>
+                        <a href={friend.url} target="_blank">
+                            {friend.short_name}
+                        </a>
+                    </Text>
+                </div>
+            );
+        });
+    }, [readyToRemoveFriends]);
 
     return (
         <Modal
@@ -32,9 +56,7 @@ export default function ConfirmDialog(props: IProps) {
             // confirmLoading={handleRemove}
             onCancel={toggleModal}
         >
-            <p>
-                <h1>hihi</h1>
-            </p>
+            <div className="review-list">{friendList}</div>
         </Modal>
     );
 }
