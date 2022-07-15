@@ -11,7 +11,7 @@ export interface FacebookUserInfo {
 export enum Gender {
     FEMALE = 'FEMALE',
     MALE = 'MALE',
-    UNKNOWN = 'UNKNOWN'
+    UNKNOWN = 'UNKNOWN',
 }
 
 export interface FriendInfo {
@@ -101,7 +101,10 @@ class Facebook {
         });
     }
 
-    async getFriends(isLocal: boolean = true) {
+    async getFriends(isLocal: boolean = true): Promise<{
+        createdAt?: number;
+        data: FriendInfo[];
+    }> {
         if (!this.userInfo) {
             throw new Error("Can't get user info");
         }
@@ -111,9 +114,10 @@ class Facebook {
             const localFriendsJson = localStorage.getItem(
                 this.LOCAL_STORAGE_KEY_NAME.FRIENDS + uid,
             );
+
             if (localFriendsJson && localFriendsJson !== '') {
                 this.friends = JSON.parse(localFriendsJson);
-                return this.friends;
+                return this.friends as any;
             }
         }
 
@@ -150,10 +154,16 @@ class Facebook {
 
         localStorage.setItem(
             this.LOCAL_STORAGE_KEY_NAME.FRIENDS + uid,
-            JSON.stringify(this.friends),
+            JSON.stringify({
+                data: this.friends,
+                createdAt: new Date().getTime(),
+            }),
         );
 
-        return this.friends;
+        return {
+            data: this.friends,
+            createdAt: new Date().getTime(),
+        };
     }
 }
 

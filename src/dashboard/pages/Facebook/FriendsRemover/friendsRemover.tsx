@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FriendInfo, Gender } from '@helpers/facebook';
 import { Alert, Avatar, Button, Input, Table, Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import { useFriendsRemover } from '@hooks/Facebook/useFriendsRemover';
 import { SearchOutlined } from '@ant-design/icons';
+import './friendsRemover.scss';
+
+import * as moment from 'moment';
+import ConfirmDialog from '@pages/Facebook/FriendsRemover/components/confirmDialog';
 
 const { Text } = Typography;
 
@@ -13,7 +17,17 @@ const getMutualFriend = (text: string) => {
 
 export default function FriendsRemover() {
     const talonProps = useFriendsRemover();
-    const { friends, isLoading, handleScanFriends, rowSelection } = talonProps;
+    const {
+        friends,
+        isLoading,
+        updatedAt,
+        isShowConfirmModal,
+        handleScanFriends,
+        handleRemove,
+        rowSelection,
+        toggleReview,
+        readyToRemoveFriends,
+    } = talonProps;
 
     const columns: ColumnsType<FriendInfo> = [
         {
@@ -39,14 +53,14 @@ export default function FriendsRemover() {
                 return record.name.toLowerCase().includes(value.toLowerCase());
             },
             render: (text: string, row: FriendInfo) => (
-                <>
+                <div className="profile">
                     <Avatar src={row?.profile_picture?.uri} />
                     <Text>
                         <a href={row.url} target="_blank">
                             {text}
                         </a>
                     </Text>
-                </>
+                </div>
             ),
         },
         {
@@ -105,27 +119,67 @@ export default function FriendsRemover() {
         },
     ];
 
+    const description = useMemo(
+        () => (
+            <Text>
+                The data has been updated at{' '}
+                <Text strong>
+                    {moment(updatedAt).format('HH:mm DD/MM/YYYY')}
+                </Text>
+                , click Scan again button to refresh data
+            </Text>
+        ),
+        [updatedAt],
+    );
+
+    const confirmModal = useMemo(() => {
+        return (
+            <ConfirmDialog
+                isShow={isShowConfirmModal}
+                rowSelection={rowSelection}
+                handleRemove={handleRemove}
+                toggleModal={toggleReview}
+                readyToRemoveFriends={readyToRemoveFriends}
+            />
+        );
+    }, [isShowConfirmModal]);
+
     return (
-        <div className="page-container">
+        <div className="page-container friends-remover">
             <h1 className="page-title">Friends Remover</h1>
+
             <Alert
-                message="Success Tips"
-                description="Detailed description and advice about successful copywriting."
+                message="Think twice before removing your friends"
+                description={description}
                 type="info"
                 showIcon
             />
-            <Button type="primary" onClick={handleScanFriends}>
-                Scan
-            </Button>
-            <Button type="primary" danger onClick={handleScanFriends}>
-                Bye bye 👋
-            </Button>
+
+            <div className="top">
+                <div className="left">
+                    <Text strong>
+                        You selected{' '}
+                        {rowSelection?.selectedRowKeys?.length || 0} friends
+                    </Text>
+                </div>
+                <div className="right">
+                    <Button type="primary" onClick={handleScanFriends}>
+                        Scan again
+                    </Button>
+                    <Button type="primary" danger onClick={toggleReview}>
+                        Bye bye 👋
+                    </Button>
+                </div>
+            </div>
+
             <Table
                 columns={columns}
                 rowSelection={rowSelection}
                 dataSource={friends}
                 rowKey="id"
+                loading={isLoading}
             />
+            {confirmModal}
         </div>
     );
 }
