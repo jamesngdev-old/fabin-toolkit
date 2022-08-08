@@ -7,7 +7,6 @@ import { SearchOutlined } from '@ant-design/icons';
 import './friendsRemover.scss';
 
 import * as moment from 'moment';
-import ConfirmDialog from '@pages/Facebook/FriendsRemover/components/confirmDialog';
 
 const { Text } = Typography;
 
@@ -21,12 +20,9 @@ export default function FriendsRemover() {
         friends,
         isLoading,
         updatedAt,
-        isShowConfirmModal,
         handleScanFriends,
-        handleRemove,
         rowSelection,
-        toggleReview,
-        readyToRemoveFriends,
+        handleRemove,
     } = talonProps;
 
     const columns: ColumnsType<FriendInfo> = [
@@ -132,18 +128,6 @@ export default function FriendsRemover() {
         [updatedAt],
     );
 
-    const confirmModal = useMemo(() => {
-        return (
-            <ConfirmDialog
-                isShow={isShowConfirmModal}
-                rowSelection={rowSelection}
-                handleRemove={handleRemove}
-                toggleModal={toggleReview}
-                readyToRemoveFriends={readyToRemoveFriends}
-            />
-        );
-    }, [isShowConfirmModal]);
-
     return (
         <div className="page-container friends-remover">
             <h1 className="page-title">Friends Remover</h1>
@@ -166,7 +150,7 @@ export default function FriendsRemover() {
                     <Button type="primary" onClick={handleScanFriends}>
                         Scan again
                     </Button>
-                    <Button type="primary" danger onClick={toggleReview}>
+                    <Button type="primary" danger onClick={handleRemove}>
                         Bye bye 👋
                     </Button>
                 </div>
@@ -179,7 +163,6 @@ export default function FriendsRemover() {
                 rowKey="id"
                 loading={isLoading}
             />
-            {confirmModal}
         </div>
     );
 }

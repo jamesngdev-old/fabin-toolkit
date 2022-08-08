@@ -6,8 +6,6 @@ export const useFriendsRemover = (props = {}) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [updatedAt, setUpdatedAt] = useState<number>();
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const [isShowConfirmModal, setIsShowConfirmModal] =
-        useState<boolean>(false);
 
     const scanFriends = useCallback(
         async (isGetFromLocal: boolean) => {
@@ -40,26 +38,20 @@ export const useFriendsRemover = (props = {}) => {
         onChange: onSelectChange,
     };
 
-    const toggleReview = useCallback(() => {
-        setIsShowConfirmModal(prev => !prev);
-    }, [setIsShowConfirmModal]);
-
     const handleRemove = useCallback(() => {
         console.log('handle remove');
     }, []);
 
     const readyToRemoveFriends = useMemo(() => {
         return friends.filter(friend => selectedRowKeys.includes(friend.id));
-    }, [friends, isShowConfirmModal]);
+    }, [friends]);
 
     return {
         isLoading,
         friends,
         updatedAt,
         rowSelection,
-        isShowConfirmModal,
         handleScanFriends,
-        toggleReview,
         handleRemove,
         readyToRemoveFriends,
     };

@@ -3,7 +3,7 @@ import { Avatar, Layout, Menu, PageHeader, Spin, Typography } from 'antd';
 import React from 'react';
 import { HashRouter as Router, Link, Route, Routes } from 'react-router-dom';
 import Dashboard from '@pages/Dashboard';
-import InteractionScan from '@pages/Facebook/InteractionScan';
+import InteractionStalk from '@pages/Facebook/InteractionStalk';
 import { observer } from 'mobx-react';
 import { AppStore } from '../../stores/app.store';
 import Facebook from '@helpers/facebook';
@@ -21,7 +21,7 @@ const routers = [
     },
     {
         path: '/facebook/interaction-scan',
-        Component: InteractionScan,
+        Component: InteractionStalk,
     },
     {
         path: '/facebook/friends-remover',
