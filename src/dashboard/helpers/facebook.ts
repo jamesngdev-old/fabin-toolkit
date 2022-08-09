@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { sleep } from '@helpers/sleep';
+import moment from 'moment';
 
 export interface FacebookUserInfo {
     name: string;
-    fb_dtsg: string;
+    fb_dtsg?: string;
     uid: string;
     gender?: string;
 }
@@ -29,6 +30,26 @@ export interface FriendInfo {
     url?: string;
 }
 
+export interface NodeInfo {
+    id: string;
+    name: string;
+}
+
+export interface InteractCount {
+    reaction: number;
+    comment: number;
+}
+
+export enum InteractType {
+    REACTION = 'REACTION',
+    COMMENT = 'COMMENT',
+}
+
+export interface InteractionMapValue {
+    info: NodeInfo;
+    interaction: InteractCount;
+}
+
 class Facebook {
     private cookie: string;
     private userInfo: FacebookUserInfo;
@@ -39,7 +60,11 @@ class Facebook {
     };
 
     async init() {
-        await this.getUserInfo();
+        if (this?.userInfo?.uid) {
+            return this;
+        }
+
+        await this.getMe();
         return this;
     }
 
@@ -60,7 +85,7 @@ class Facebook {
         });
     }
 
-    async getUserInfo(): Promise<FacebookUserInfo> {
+    async getMe(): Promise<FacebookUserInfo> {
         const profileSource = await axios
             .get('https://m.facebook.com/profile.php')
             .then(res => res.data);
@@ -99,6 +124,134 @@ class Facebook {
                 'Content-Type': 'multipart/form-data',
             },
         });
+    }
+
+    async getUserInfoByUrl(url: string): Promise<FacebookUserInfo> {
+        const { pathname, searchParams } = new URL(url);
+        let username;
+        if (pathname === '/profile.php') {
+            username = searchParams.get('id');
+        } else {
+            username = pathname.slice(1);
+        }
+
+        const profileURL = 'https://mbasic.facebook.com/' + username;
+        const profileSource = await axios.get(profileURL).then(res => res.data);
+
+        const idRegex = /<input type="hidden" name="id" value="(\d*)"/g;
+        const nameRegex = /<title>(.*)<\/title>/g;
+
+        const uid = idRegex.exec(profileSource)?.[1];
+        const name = nameRegex.exec(profileSource)?.[1];
+
+        return {
+            uid,
+            name,
+        };
+    }
+
+    calculateInteractionTime(
+        interactionMap: Map<string, InteractionMapValue>,
+        nodes: { id: string; name: string }[],
+        interactionType: InteractType,
+        ignoreIds?: string[],
+    ) {
+        for (const node of nodes) {
+            const { id } = node;
+            if (ignoreIds?.includes(id)) continue;
+
+            if (interactionMap.has(id)) {
+                const { interaction, info } = interactionMap.get(id);
+                const { comment, reaction } = interaction;
+                interactionMap.set(id, {
+                    info,
+                    interaction: {
+                        comment:
+                            interactionType === InteractType.COMMENT
+                                ? comment + 1
+                                : comment,
+                        reaction:
+                            interactionType === InteractType.REACTION
+                                ? reaction + 1
+                                : reaction,
+                    },
+                });
+            } else {
+                interactionMap.set(id, {
+                    info: node,
+                    interaction: {
+                        comment:
+                            interactionType === InteractType.COMMENT ? 1 : 0,
+                        reaction:
+                            interactionType === InteractType.REACTION ? 1 : 0,
+                    },
+                });
+            }
+        }
+
+        return interactionMap;
+    }
+
+    async getInteractions(
+        uid: string,
+        startDate: number,
+        endDate: number,
+    ): Promise<Map<string, InteractionMapValue>> {
+        let after = '';
+        let interactionMap = new Map<string, InteractionMapValue>();
+
+        let isStop = false;
+        while (!isStop) {
+            const query = `node(${uid}){timeline_feed_units.first(250).after(${after}){page_info,edges{node{id,creation_time,feedback{reactors{nodes{id,name}},commenters{nodes{id,name}}}}}}}`;
+            const response = await this.graphQL({
+                q: query,
+                fb_dtsg: this.userInfo.fb_dtsg,
+            });
+
+            const { edges = [], page_info = {} } =
+                response?.data?.[uid]?.timeline_feed_units;
+
+            for (const edge of edges) {
+                const { node } = edge;
+                const { creation_time, feedback } = node;
+                const createTimeMoment = moment(creation_time * 1000);
+
+                if (
+                    createTimeMoment.isAfter(moment(startDate)) &&
+                    createTimeMoment.isBefore(moment(endDate))
+                ) {
+                    if (feedback?.commenters?.nodes) {
+                        this.calculateInteractionTime(
+                            interactionMap,
+                            feedback?.commenters?.nodes,
+                            InteractType.COMMENT,
+                            [uid],
+                        );
+                    }
+                    if (feedback?.reactors?.nodes) {
+                        this.calculateInteractionTime(
+                            interactionMap,
+                            feedback?.reactors?.nodes,
+                            InteractType.REACTION,
+                            [uid],
+                        );
+                    }
+                }
+
+                if (createTimeMoment.isBefore(moment(startDate))) {
+                    isStop = true;
+                    break;
+                }
+            }
+
+            if (page_info?.has_next_page) {
+                after = page_info?.end_cursor;
+            } else {
+                break;
+            }
+        }
+
+        return interactionMap;
     }
 
     async getFriends(isLocal: boolean = true): Promise<{

@@ -1,0 +1,43 @@
+.interaction-stalk {
+    .filterContainer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 50px;
+    }
+
+    .gutter-row {
+        margin-bottom: 20px;
+    }
+
+    .profile {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .filter {
+        .item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 100%;
+            margin: 15px 0;
+
+            span {
+                font-weight: bold;
+            }
+        }
+
+        .ant-btn {
+            margin-top: 20px;
+        }
+    }
+
+    .preview {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+    }
+}
