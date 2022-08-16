@@ -46,6 +46,11 @@ export default function useInteractionStalk() {
                 setInteractors(Array.from(interactionMap.values()));
                 setIsLoading(false);
             });
+
+        facebook.getLikedPage(stalkUser.uid).then(res => {
+            console.log(res);
+        });
+
     }, [stalkUser, dateRange, setIsLoading, setInteractors]);
 
     const onChangeDate = useCallback(

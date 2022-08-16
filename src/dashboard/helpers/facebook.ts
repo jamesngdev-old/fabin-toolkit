@@ -15,6 +15,21 @@ export enum Gender {
     UNKNOWN = 'UNKNOWN',
 }
 
+export class LikedPageNode {
+    id: string;
+    image: {
+        uri: string;
+    };
+    node: {
+        id: string;
+        url: string;
+    };
+    title: {
+        text: string;
+    };
+    url: string;
+}
+
 export interface FriendInfo {
     friendship_status?: string;
     gender?: Gender;
@@ -40,6 +55,11 @@ export interface InteractCount {
     comment: number;
 }
 
+export interface InteractPost {
+    reactions: string[];
+    comments: string[];
+}
+
 export enum InteractType {
     REACTION = 'REACTION',
     COMMENT = 'COMMENT',
@@ -48,6 +68,7 @@ export enum InteractType {
 export interface InteractionMapValue {
     info: NodeInfo;
     interaction: InteractCount;
+    interactIn: InteractPost;
 }
 
 class Facebook {
@@ -138,7 +159,8 @@ class Facebook {
         const profileURL = 'https://mbasic.facebook.com/' + username;
         const profileSource = await axios.get(profileURL).then(res => res.data);
 
-        const idRegex = /<input type="hidden" name="id" value="(\d*)"/g;
+        const idRegex =
+            /<a href=\"\/profile\/picture\/view\/\?profile_id=(\d*)&/g;
         const nameRegex = /<title>(.*)<\/title>/g;
 
         const uid = idRegex.exec(profileSource)?.[1];
@@ -155,13 +177,15 @@ class Facebook {
         nodes: { id: string; name: string }[],
         interactionType: InteractType,
         ignoreIds?: string[],
+        postId?: string,
     ) {
         for (const node of nodes) {
             const { id } = node;
             if (ignoreIds?.includes(id)) continue;
 
             if (interactionMap.has(id)) {
-                const { interaction, info } = interactionMap.get(id);
+                const { interaction, info, interactIn } =
+                    interactionMap.get(id);
                 const { comment, reaction } = interaction;
                 interactionMap.set(id, {
                     info,
@@ -175,6 +199,16 @@ class Facebook {
                                 ? reaction + 1
                                 : reaction,
                     },
+                    interactIn: {
+                        comments:
+                            interactionType === InteractType.COMMENT
+                                ? [...interactIn.comments, postId]
+                                : interactIn.comments,
+                        reactions:
+                            interactionType === InteractType.REACTION
+                                ? [...interactIn.reactions, postId]
+                                : interactIn.reactions,
+                    },
                 });
             } else {
                 interactionMap.set(id, {
@@ -184,6 +218,16 @@ class Facebook {
                             interactionType === InteractType.COMMENT ? 1 : 0,
                         reaction:
                             interactionType === InteractType.REACTION ? 1 : 0,
+                    },
+                    interactIn: {
+                        comments:
+                            interactionType === InteractType.COMMENT
+                                ? [postId]
+                                : [],
+                        reactions:
+                            interactionType === InteractType.REACTION
+                                ? [postId]
+                                : [],
                     },
                 });
             }
@@ -209,11 +253,12 @@ class Facebook {
             });
 
             const { edges = [], page_info = {} } =
-                response?.data?.[uid]?.timeline_feed_units;
+                response?.data?.[uid]?.timeline_feed_units || {};
 
             for (const edge of edges) {
                 const { node } = edge;
-                const { creation_time, feedback } = node;
+                const { creation_time, feedback, id } = node;
+                const postId = atob(id).split(':').pop();
                 const createTimeMoment = moment(creation_time * 1000);
 
                 if (
@@ -226,6 +271,7 @@ class Facebook {
                             feedback?.commenters?.nodes,
                             InteractType.COMMENT,
                             [uid],
+                            postId,
                         );
                     }
                     if (feedback?.reactors?.nodes) {
@@ -234,6 +280,7 @@ class Facebook {
                             feedback?.reactors?.nodes,
                             InteractType.REACTION,
                             [uid],
+                            postId,
                         );
                     }
                 }
@@ -252,6 +299,46 @@ class Facebook {
         }
 
         return interactionMap;
+    }
+
+    async getLikedPage(targetId: string) {
+        let result: LikedPageNode[] = [];
+        const { uid, fb_dtsg } = this.userInfo;
+        let cursor = '';
+        let query = {
+            __user: uid,
+            __a: 1,
+            dpr: 1,
+            fb_dtsg,
+            fb_api_caller_class:
+                'ProfileCometAppCollectionGridRendererPaginationQuery',
+            fb_api_req_friendly_name:
+                'FriendingCometFriendsListPaginationQuery',
+            variables: `{"count":8,"cursor":"${cursor}","scale":1,"id":"${btoa(
+                targetId,
+            )}"}`,
+            doc_id: 4858065864249125,
+        };
+        while (true) {
+            const response = await this.graphQL(query);
+            const allFriends = response?.data?.data?.node?.items;
+            const { edges = [], page_info } = allFriends;
+
+            if (!page_info?.has_next_page) {
+                break;
+            } else {
+                cursor = page_info.end_cursor;
+                await sleep(2 * 1000);
+            }
+
+            for (const edge of edges) {
+                if (edge?.node) {
+                    result.push(edge.node);
+                }
+            }
+        }
+
+        return result;
     }
 
     async getFriends(isLocal: boolean = true): Promise<{

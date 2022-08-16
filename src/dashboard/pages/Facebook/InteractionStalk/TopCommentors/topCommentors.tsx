@@ -1,7 +1,7 @@
 import { Avatar, Table, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import React from 'react';
-import { InteractionMapValue } from '@helpers/facebook';
+import { InteractionMapValue, InteractPost } from '@helpers/facebook';
 import { getFacebookAvatar } from '@helpers/image';
 
 const { Text } = Typography;
@@ -24,11 +24,21 @@ const columns: ColumnsType<InteractionMapValue> = [
     },
     {
         title: 'Comment',
-        dataIndex: 'Comment',
+        dataIndex: 'interaction',
         key: 'interaction',
         render: (text: string, row: InteractionMapValue) => (
             <Text>{row.interaction.comment}</Text>
         ),
+    },
+    {
+        title: 'Posts',
+        dataIndex: 'interactIn',
+        key: 'interactIn',
+        render: (interactIn: InteractPost) => {
+            return interactIn.comments.map(comment => {
+                return <a href={`https://www.facebook.com/${comment}`}>{comment}</a>;
+            });
+        },
     },
 ];
 
@@ -39,6 +49,11 @@ interface TopReactorsProps {
 
 export default function TopCommentors(props: TopReactorsProps) {
     return (
-        <Table columns={columns} dataSource={props.data} pagination={false} loading={props.isLoading}/>
+        <Table
+            columns={columns}
+            dataSource={props.data}
+            pagination={false}
+            loading={props.isLoading}
+        />
     );
 }
