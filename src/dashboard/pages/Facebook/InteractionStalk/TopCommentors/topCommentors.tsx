@@ -36,7 +36,16 @@ const columns: ColumnsType<InteractionMapValue> = [
         key: 'interactIn',
         render: (interactIn: InteractPost) => {
             return interactIn.comments.map(comment => {
-                return <a href={`https://www.facebook.com/${comment}`}>{comment}</a>;
+                return (
+                    <a
+                        style={{
+                            display: 'block',
+                        }}
+                        href={`https://www.facebook.com/${comment}`}
+                    >
+                        {comment}
+                    </a>
+                );
             });
         },
     },

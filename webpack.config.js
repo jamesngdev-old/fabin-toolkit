@@ -106,7 +106,7 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions: ['.ts', '.js', '.tsx'],
+        extensions: ['.ts', '.js', '.tsx', '.*'],
         alias: {
             '@components': path.resolve(
                 __dirname,
@@ -117,6 +117,7 @@ module.exports = {
             '@redux': path.resolve(__dirname, './src/dashboard/redux'),
             '@helpers': path.resolve(__dirname, './src/dashboard/helpers'),
             '@background': path.resolve(__dirname, './src/background'),
+            '@assets': path.resolve(__dirname, './src/dashboard/assets'),
         },
     },
     output: {

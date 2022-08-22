@@ -1,0 +1,21 @@
+.dashboard {
+    .welcome {
+        h3 {
+            font-size: 24px;
+        }
+
+        .ant-card-body {
+            padding-bottom: 0;
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        img {
+            height: 180px;
+        }
+    }
+
+}

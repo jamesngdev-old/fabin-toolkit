@@ -98,12 +98,6 @@ export default function InteractionStalk() {
                         />
                     </Card>
                 </Col>
-
-                <Col className="gutter-row" span={24}>
-                    <Card title="Following Page" bordered={false}>
-                        <TopReactors data={topReactors} isLoading={isLoading} />
-                    </Card>
-                </Col>
             </Row>
         </div>
     );
