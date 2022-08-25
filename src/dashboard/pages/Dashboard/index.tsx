@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Col, Row } from 'antd';
 import './dashboard.scss';
-import personalImage from '../../assets/images/person-dashboard.png';
+import personalImage from './../../assets/images/person-dashboard.png';
 
 export default function Dashboard() {
     return (

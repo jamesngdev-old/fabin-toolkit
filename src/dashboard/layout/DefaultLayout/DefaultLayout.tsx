@@ -1,5 +1,5 @@
 import { FacebookFilled, HomeOutlined } from '@ant-design/icons';
-import { Avatar, Layout, Menu, PageHeader, Spin, Typography } from 'antd';
+import { Avatar, Layout, Menu, Spin, Typography } from 'antd';
 import React from 'react';
 import { HashRouter as Router, Link, Route, Routes } from 'react-router-dom';
 import Dashboard from '@pages/Dashboard';
@@ -63,11 +63,14 @@ const DefaultLayout: React.FC = observer(() => {
                     onCollapse={(collapsed, type) => {
                         console.log(collapsed, type);
                     }}
+                    width={260}
                 >
-                    <div className="logo">
-                        <img src="/icon128.png" alt="logo" />
-                        <span>FABI Toolkit</span>
-                    </div>
+                    <Link to={'/'}>
+                        <div className="logo">
+                            <img src="/icon128.png" alt="logo" />
+                            <span>FABI Toolkit</span>
+                        </div>
+                    </Link>
                     <Menu theme="dark" mode="inline">
                         <Menu.Item icon={<HomeOutlined />}>
                             <Link to="/">Dashboard</Link>
@@ -96,6 +99,7 @@ const DefaultLayout: React.FC = observer(() => {
                     >
                         <div className="nav_profile">
                             <Avatar
+                                size={'large'}
                                 src={`https://graph.facebook.com/${appStore?.facebookUserInfo?.uid}/picture?width=200&height=200&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`}
                             />
                             <Title level={5}>
