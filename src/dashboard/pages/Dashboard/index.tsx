@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Col, Row } from 'antd';
 import './dashboard.scss';
+// @ts-ignore
 import personalImage from './../../assets/images/person-dashboard.png';
 
 export default function Dashboard() {

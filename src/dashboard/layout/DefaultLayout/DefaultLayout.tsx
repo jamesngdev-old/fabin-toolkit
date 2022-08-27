@@ -10,6 +10,7 @@ import Facebook from '@helpers/facebook';
 import './defaultLayout.scss';
 import FriendsRemover from '@pages/Facebook/FriendsRemover';
 import { getFacebookAvatar } from '@helpers/image';
+import LikedPageStalk from '@pages/Facebook/LikedPageStalk';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Title } = Typography;
@@ -28,6 +29,10 @@ const routers = [
         path: '/facebook/friends-remover',
         Component: FriendsRemover,
     },
+    {
+        path: '/facebook/liked-page-stalk',
+        Component: LikedPageStalk,
+    },
 ];
 
 const routerList = routers.map(router => {
@@ -40,15 +45,12 @@ const appStore = new AppStore();
 const DefaultLayout: React.FC = observer(() => {
     const facebook = new Facebook();
 
-    console.log('layout handle', appStore.pageTitle);
-
     useEffect(() => {
         // appStore.isLoading = true;
         // facebook.getMe().then(info => {
         //     appStore.isLoading = false;
         //     appStore.facebookUserInfo = info;
         // });
-        console.log();
     }, [appStore]);
 
     if (appStore.isLoading) {
@@ -91,6 +93,12 @@ const DefaultLayout: React.FC = observer(() => {
                             <Menu.Item>
                                 <Link to="/facebook/friends-remover">
                                     Friends Remover
+                                </Link>
+                            </Menu.Item>
+
+                            <Menu.Item>
+                                <Link to="/facebook/liked-page-stalk">
+                                    Liked Page Stalk
                                 </Link>
                             </Menu.Item>
                         </Menu.SubMenu>

@@ -1,3 +1,4 @@
+// @ts-ignore
 import defaultAvatar from '../assets/images/avatar.png';
 
 export const getFacebookAvatar = (

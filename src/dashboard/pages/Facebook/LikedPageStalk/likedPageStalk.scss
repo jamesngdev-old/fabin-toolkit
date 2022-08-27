@@ -1,0 +1,34 @@
+.friends-remover {
+    .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .right {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin: 20px 0;
+        }
+    }
+
+    .profile {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+}
+
+.review-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+
+    .review-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+}
