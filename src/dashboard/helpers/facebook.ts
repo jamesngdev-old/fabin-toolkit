@@ -95,7 +95,7 @@ class Facebook {
                 {
                     domain: '.facebook.com',
                 },
-                function (cookies) {
+                function(cookies) {
                     this.cookie = cookies.reduce((result, cookie) => {
                         result += cookie.name + ':' + cookie.value + '; ';
                         return result;
@@ -159,8 +159,7 @@ class Facebook {
         const profileURL = 'https://mbasic.facebook.com/' + username;
         const profileSource = await axios.get(profileURL).then(res => res.data);
 
-        const idRegex =
-            /<a href=\"\/profile\/picture\/view\/\?profile_id=(\d*)&/g;
+        const idRegex = /<input type="hidden" name="id" value="(\d*)"/g;
         const nameRegex = /<title>(.*)<\/title>/g;
 
         const uid = idRegex.exec(profileSource)?.[1];
@@ -253,12 +252,14 @@ class Facebook {
             });
 
             const { edges = [], page_info = {} } =
-                response?.data?.[uid]?.timeline_feed_units || {};
+            response?.data?.[uid]?.timeline_feed_units || {};
 
             for (const edge of edges) {
                 const { node } = edge;
                 const { creation_time, feedback, id } = node;
                 const postId = atob(id).split(':').pop();
+                console.log('base64', atob(id));
+
                 const createTimeMoment = moment(creation_time * 1000);
 
                 if (

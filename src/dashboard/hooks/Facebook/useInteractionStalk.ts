@@ -5,28 +5,41 @@ import Facebook, {
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { RangePickerProps } from 'antd/es/date-picker';
 import moment from 'moment';
+import { message } from 'antd';
 
 const facebook = new Facebook();
 
 export default function useInteractionStalk() {
     const [stalkUser, setStalkUser] = useState<FacebookUserInfo>();
     const [dateRange, setDateRange] = useState<RangePickerProps['value']>([
-        moment().subtract(1, 'month'),
+        moment().subtract(6, 'month'),
         moment(),
     ]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isFetchingTargetProfile, setIsFetchingTargetProfile] =
+        useState<boolean>(false);
     const [interactors, setInteractors] = useState<InteractionMapValue[]>([]);
-
-    useEffect(() => {
-        facebook.init();
-    }, []);
+    //
+    // useEffect(() => {
+    //     facebook.init();
+    // }, []);
 
     const onChangeProfile = useCallback(
         async (event: any) => {
-            const facebookInfo = await facebook.getUserInfoByUrl(
-                event.target.value,
-            );
-            setStalkUser(facebookInfo);
+            setIsFetchingTargetProfile(true);
+            facebook
+                .getUserInfoByUrl(event.target.value)
+                .then(info => {
+                    setStalkUser(info);
+                })
+                .catch(() => {
+                    message.warn(
+                        'Sorry ! Get trouble when get target user info',
+                    );
+                })
+                .finally(() => {
+                    setIsFetchingTargetProfile(false);
+                });
         },
         [setStalkUser],
     );
@@ -46,11 +59,6 @@ export default function useInteractionStalk() {
                 setInteractors(Array.from(interactionMap.values()));
                 setIsLoading(false);
             });
-
-        facebook.getLikedPage(stalkUser.uid).then(res => {
-            console.log(res);
-        });
-
     }, [stalkUser, dateRange, setIsLoading, setInteractors]);
 
     const onChangeDate = useCallback(
@@ -80,6 +88,7 @@ export default function useInteractionStalk() {
 
     return {
         isLoading,
+        isFetchingTargetProfile,
         onChangeProfile,
         stalkUser,
         dateRange,

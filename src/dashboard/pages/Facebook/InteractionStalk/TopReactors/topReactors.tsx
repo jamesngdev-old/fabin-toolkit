@@ -12,10 +12,13 @@ const columns: ColumnsType<InteractionMapValue> = [
         dataIndex: 'info',
         key: 'info',
         render: (text: string, row: InteractionMapValue) => (
-            <div className="profile">
+            <div className="avatar-container">
                 <Avatar src={getFacebookAvatar(row.info.id)} />
                 <Text>
-                    <a href={`https://facebook.com/${row.info.id}`} target="_blank">
+                    <a
+                        href={`https://facebook.com/${row.info.id}`}
+                        target="_blank"
+                    >
                         {row.info.name}
                     </a>
                 </Text>

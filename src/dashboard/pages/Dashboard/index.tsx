@@ -6,7 +6,12 @@ import personalImage from './../../assets/images/person-dashboard.png';
 export default function Dashboard() {
     return (
         <div className="dashboard">
-            <Row gutter={16}>
+            <Row
+                gutter={16}
+                style={{
+                    marginTop: 20,
+                }}
+            >
                 <Col className="gutter-row" span={16}>
                     <Card bordered={false} className="welcome">
                         <div className="content">

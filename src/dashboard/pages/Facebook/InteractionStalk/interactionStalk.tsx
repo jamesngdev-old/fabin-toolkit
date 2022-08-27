@@ -15,6 +15,7 @@ import useInteractionStalk from '@hooks/Facebook/useInteractionStalk';
 import { getFacebookAvatar } from '@helpers/image';
 import TopReactors from '@pages/Facebook/InteractionStalk/TopReactors';
 import TopCommentors from '@pages/Facebook/InteractionStalk/TopCommentors';
+import { usePageTitle } from '@hooks/usePageTitle';
 
 const { Title } = Typography;
 
@@ -23,8 +24,12 @@ const dateFormat = 'DD/MM/YYYY';
 
 export default function InteractionStalk() {
     const talonProps = useInteractionStalk();
+
+    usePageTitle({ title: 'Interaction Stalk' });
+
     const {
         isLoading,
+        isFetchingTargetProfile,
         onChangeProfile,
         stalkUser,
         dateRange,
@@ -42,8 +47,8 @@ export default function InteractionStalk() {
                     marginTop: '20px',
                 }}
             >
-                <Col className="gutter-row" span={24}>
-                    <Card title="🕵️‍♀️ Facebook Stalk" bordered={false}>
+                <Col className="gutter-row" span={12}>
+                    <Card bordered={false}>
                         <div className="filterContainer">
                             <div className="filter">
                                 <div className="item">
@@ -52,6 +57,8 @@ export default function InteractionStalk() {
                                         placeholder="Facebook Profile URL"
                                         prefix={<UserOutlined />}
                                         onChange={onChangeProfile}
+                                        allowClear
+                                        disabled={isFetchingTargetProfile}
                                     />
                                 </div>
                                 <div className="item">
@@ -74,17 +81,22 @@ export default function InteractionStalk() {
                                     Start Stalk
                                 </Button>
                             </div>
-                            <div className="preview">
-                                <Avatar
-                                    size={100}
-                                    src={getFacebookAvatar(stalkUser?.uid)}
-                                />
-                                <Title level={4}>{stalkUser?.name}</Title>
-                            </div>
                         </div>
                     </Card>
                 </Col>
 
+                <Col className="gutter-row" span={12}>
+                    <Card bordered={false}>
+                        <div className="profile">
+                            <Avatar
+                                size={130}
+                                src={getFacebookAvatar(stalkUser?.uid)}
+                            />
+                            <Title level={4}>{stalkUser?.name}</Title>
+                            <Typography.Text>Ready to stalk</Typography.Text>
+                        </div>
+                    </Card>
+                </Col>
                 <Col className="gutter-row" span={12}>
                     <Card title="Top Reaction" bordered={false}>
                         <TopReactors data={topReactors} isLoading={isLoading} />

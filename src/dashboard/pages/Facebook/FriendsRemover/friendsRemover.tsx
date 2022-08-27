@@ -1,6 +1,17 @@
 import React, { useMemo } from 'react';
 import { FriendInfo, Gender } from '@helpers/facebook';
-import { Alert, Avatar, Button, Input, Table, Tag, Typography } from 'antd';
+import {
+    Alert,
+    Avatar,
+    Button,
+    Input,
+    Table,
+    Card,
+    Tag,
+    Typography,
+    Row,
+    Col,
+} from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import { useFriendsRemover } from '@hooks/Facebook/useFriendsRemover';
 import { SearchOutlined } from '@ant-design/icons';
@@ -129,40 +140,60 @@ export default function FriendsRemover() {
     );
 
     return (
-        <div className="page-container friends-remover">
-            <h1 className="page-title">Friends Remover</h1>
+        <div className="page interaction-stalk">
+            <Row
+                gutter={16}
+                style={{
+                    marginTop: '20px',
+                }}
+            >
+                <Col className="gutter-row" span={24}>
+                    <Card bordered={false}>
+                        <div className="friends-remover">
+                            <Alert
+                                message="Think twice before removing your friends"
+                                description={description}
+                                type="info"
+                                showIcon
+                            />
 
-            <Alert
-                message="Think twice before removing your friends"
-                description={description}
-                type="info"
-                showIcon
-            />
+                            <div className="top">
+                                <div className="left">
+                                    <Text strong>
+                                        You selected{' '}
+                                        {rowSelection?.selectedRowKeys
+                                            ?.length || 0}{' '}
+                                        friends
+                                    </Text>
+                                </div>
+                                <div className="right">
+                                    <Button
+                                        type="primary"
+                                        onClick={handleScanFriends}
+                                    >
+                                        Scan again
+                                    </Button>
+                                    <Button
+                                        type="primary"
+                                        danger
+                                        onClick={handleRemove}
+                                    >
+                                        Bye bye 👋
+                                    </Button>
+                                </div>
+                            </div>
 
-            <div className="top">
-                <div className="left">
-                    <Text strong>
-                        You selected{' '}
-                        {rowSelection?.selectedRowKeys?.length || 0} friends
-                    </Text>
-                </div>
-                <div className="right">
-                    <Button type="primary" onClick={handleScanFriends}>
-                        Scan again
-                    </Button>
-                    <Button type="primary" danger onClick={handleRemove}>
-                        Bye bye 👋
-                    </Button>
-                </div>
-            </div>
-
-            <Table
-                columns={columns}
-                rowSelection={rowSelection}
-                dataSource={friends}
-                rowKey="id"
-                loading={isLoading}
-            />
+                            <Table
+                                columns={columns}
+                                rowSelection={rowSelection}
+                                dataSource={friends}
+                                rowKey="id"
+                                loading={isLoading}
+                            />
+                        </div>
+                    </Card>
+                </Col>
+            </Row>
         </div>
     );
 }

@@ -1,6 +1,6 @@
 import { FacebookFilled, HomeOutlined } from '@ant-design/icons';
 import { Avatar, Layout, Menu, Spin, Typography } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { HashRouter as Router, Link, Route, Routes } from 'react-router-dom';
 import Dashboard from '@pages/Dashboard';
 import InteractionStalk from '@pages/Facebook/InteractionStalk';
@@ -9,6 +9,7 @@ import { AppStore } from '../../stores/app.store';
 import Facebook from '@helpers/facebook';
 import './defaultLayout.scss';
 import FriendsRemover from '@pages/Facebook/FriendsRemover';
+import { getFacebookAvatar } from '@helpers/image';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Title } = Typography;
@@ -39,13 +40,16 @@ const appStore = new AppStore();
 const DefaultLayout: React.FC = observer(() => {
     const facebook = new Facebook();
 
-    // useEffect(() => {
-    //     appStore.isLoading = true;
-    //     facebook.getUserInfo().then(info => {
-    //         appStore.isLoading = false;
-    //         appStore.facebookUserInfo = info;
-    //     });
-    // }, []);
+    console.log('layout handle', appStore.pageTitle);
+
+    useEffect(() => {
+        // appStore.isLoading = true;
+        // facebook.getMe().then(info => {
+        //     appStore.isLoading = false;
+        //     appStore.facebookUserInfo = info;
+        // });
+        console.log();
+    }, [appStore]);
 
     if (appStore.isLoading) {
         return <Spin />;
@@ -98,27 +102,31 @@ const DefaultLayout: React.FC = observer(() => {
                         style={{ padding: 0 }}
                     >
                         <div className="nav_profile">
-                            <Avatar
-                                size={'large'}
-                                src={`https://graph.facebook.com/${appStore?.facebookUserInfo?.uid}/picture?width=200&height=200&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`}
-                            />
-                            <Title level={5}>
-                                {appStore?.facebookUserInfo?.name}
-                            </Title>
+                            <div className="title">
+                                <Title level={3}>{appStore.pageTitle}</Title>
+                            </div>
+                            <div className="profile">
+                                <Avatar
+                                    size={'large'}
+                                    src={getFacebookAvatar(
+                                        appStore?.facebookUserInfo?.uid,
+                                    )}
+                                />
+                                <Title level={5}>
+                                    {appStore?.facebookUserInfo?.name}
+                                </Title>
+                            </div>
                         </div>
                     </Header>
 
-                    <Content style={{ margin: '24px 16px 0' }}>
+                    <Content>
                         <div
                             className="site-layout-background"
-                            style={{ padding: 24, minHeight: 360 }}
+                            style={{ minHeight: 360 }}
                         >
                             <Routes>{routerList}</Routes>
                         </div>
                     </Content>
-                    <Footer style={{ textAlign: 'center' }}>
-                        FABI Toolkit by James Nguyen (jamesngdev)
-                    </Footer>
                 </Layout>
             </Layout>
         </Router>
