@@ -14,9 +14,9 @@ import {
     Divider,
 } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
-import { useFriendsRemover } from '@hooks/Facebook/useFriendsRemover';
 import { SearchOutlined } from '@ant-design/icons';
 import './likedPageStalk.scss';
+import usePageLiked from '@hooks/Facebook/usePageLiked';
 
 const { Text } = Typography;
 
@@ -25,15 +25,8 @@ const getMutualFriend = (text: string) => {
 };
 
 export default function LikedPageStalk() {
-    const talonProps = useFriendsRemover();
-    const {
-        friends,
-        isLoading,
-        updatedAt,
-        handleScanFriends,
-        rowSelection,
-        handleRemove,
-    } = talonProps;
+    const talonProps = usePageLiked();
+    const { isLoading, getLikedPage } = talonProps;
 
     const columns: ColumnsType<FriendInfo> = [
         {
@@ -142,27 +135,17 @@ export default function LikedPageStalk() {
                                         placeholder="Facebook ID"
                                         enterButton="Search"
                                         size="large"
+                                        onSearch={getLikedPage}
                                     />
                                 </div>
-                                <div className="right">
-                                    {rowSelection?.selectedRowKeys?.length ? (
-                                        <Button
-                                            type="primary"
-                                            danger
-                                            onClick={handleRemove}
-                                        >
-                                            Unfollow
-                                        </Button>
-                                    ) : null}
-                                </div>
+                                <div className="right"></div>
                             </div>
 
                             <Divider />
 
                             <Table
                                 columns={columns}
-                                rowSelection={rowSelection}
-                                dataSource={friends}
+                                dataSource={[]}
                                 rowKey="id"
                                 loading={isLoading}
                             />

@@ -95,7 +95,7 @@ class Facebook {
                 {
                     domain: '.facebook.com',
                 },
-                function(cookies) {
+                function (cookies) {
                     this.cookie = cookies.reduce((result, cookie) => {
                         result += cookie.name + ':' + cookie.value + '; ';
                         return result;
@@ -252,7 +252,7 @@ class Facebook {
             });
 
             const { edges = [], page_info = {} } =
-            response?.data?.[uid]?.timeline_feed_units || {};
+                response?.data?.[uid]?.timeline_feed_units || {};
 
             for (const edge of edges) {
                 const { node } = edge;
@@ -306,23 +306,24 @@ class Facebook {
         let result: LikedPageNode[] = [];
         const { uid, fb_dtsg } = this.userInfo;
         let cursor = '';
-        let query = {
-            __user: uid,
-            __a: 1,
-            dpr: 1,
-            fb_dtsg,
-            fb_api_caller_class:
-                'ProfileCometAppCollectionGridRendererPaginationQuery',
-            fb_api_req_friendly_name:
-                'FriendingCometFriendsListPaginationQuery',
-            variables: `{"count":8,"cursor":"${cursor}","scale":1,"id":"${btoa(
-                targetId,
-            )}"}`,
-            doc_id: 4858065864249125,
-        };
+
         while (true) {
+            let query = {
+                __user: uid,
+                __a: 1,
+                dpr: 1,
+                fb_dtsg,
+                fb_api_caller_class: 'RelayModern',
+                fb_api_req_friendly_name:
+                    'ProfileCometAppCollectionGridRendererPaginationQuery',
+                variables: `{"count":8,"cursor":"${cursor}","scale":1,"id":""}`,
+            };
+
             const response = await this.graphQL(query);
-            const allFriends = response?.data?.data?.node?.items;
+            const allFriends = response?.data?.data?.viewer?.all_friends;
+            if (!allFriends) {
+                throw new Error("Can't get liked page of this user");
+            }
             const { edges = [], page_info } = allFriends;
 
             if (!page_info?.has_next_page) {
