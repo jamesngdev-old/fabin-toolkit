@@ -1,20 +1,24 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Facebook, { FriendInfo } from '@helpers/facebook';
 
 export const useFriendsRemover = (props = {}) => {
     const [friends, setFriends] = useState<FriendInfo[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [updatedAt, setUpdatedAt] = useState<number>();
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
     const scanFriends = useCallback(
         async (isGetFromLocal: boolean) => {
             setIsLoading(true);
             const facebook = await new Facebook().init();
-            const friends = await facebook.getFriends(isGetFromLocal);
-            setFriends(friends);
+            const { data, createdAt } = await facebook.getFriends(
+                isGetFromLocal,
+            );
+            setFriends(data);
             setIsLoading(false);
+            setUpdatedAt(createdAt);
         },
-        [setFriends, setIsLoading],
+        [setFriends, setIsLoading, setUpdatedAt],
     );
 
     useEffect(() => {
@@ -26,7 +30,6 @@ export const useFriendsRemover = (props = {}) => {
     };
 
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        console.log('selectedRowKeys changed: ', selectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
     };
 
@@ -35,10 +38,21 @@ export const useFriendsRemover = (props = {}) => {
         onChange: onSelectChange,
     };
 
+    const handleRemove = useCallback(() => {
+        console.log('handle remove');
+    }, []);
+
+    const readyToRemoveFriends = useMemo(() => {
+        return friends.filter(friend => selectedRowKeys.includes(friend.id));
+    }, [friends]);
+
     return {
         isLoading,
         friends,
+        updatedAt,
+        rowSelection,
         handleScanFriends,
-        rowSelection
+        handleRemove,
+        readyToRemoveFriends,
     };
 };

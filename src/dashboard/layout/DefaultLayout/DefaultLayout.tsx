@@ -1,55 +1,25 @@
-import { FacebookFilled, HomeOutlined } from '@ant-design/icons';
-import { Avatar, Layout, Menu, PageHeader, Spin, Typography } from 'antd';
 import React from 'react';
 import { HashRouter as Router, Link, Route, Routes } from 'react-router-dom';
-import Dashboard from '@pages/Dashboard';
-import InteractionScan from '@pages/Facebook/InteractionScan';
-import { observer } from 'mobx-react';
-import { AppStore } from '../../stores/app.store';
-import Facebook from '@helpers/facebook';
+import { FacebookFilled, HomeOutlined } from '@ant-design/icons';
+import { Avatar, Layout, Menu, Typography } from 'antd';
+import routers from '../../routers';
+import { getFacebookAvatar } from '@helpers/image';
+import { RootState } from '@redux/reducers';
 import './defaultLayout.scss';
-import FriendsRemover from '@pages/Facebook/FriendsRemover';
+import { useSelector } from 'react-redux';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
-
-const routers = [
-    {
-        path: '/',
-        Component: Dashboard,
-        index: true,
-    },
-    {
-        path: '/facebook/interaction-scan',
-        Component: InteractionScan,
-    },
-    {
-        path: '/facebook/friends-remover',
-        Component: FriendsRemover,
-    },
-];
 
 const routerList = routers.map(router => {
     const { path, Component, ...additions } = router;
     return <Route path={path} element={<Component />} {...additions} />;
 });
 
-const appStore = new AppStore();
-
-const DefaultLayout: React.FC = observer(() => {
-    const facebook = new Facebook();
-
-    // useEffect(() => {
-    //     appStore.isLoading = true;
-    //     facebook.getUserInfo().then(info => {
-    //         appStore.isLoading = false;
-    //         appStore.facebookUserInfo = info;
-    //     });
-    // }, []);
-
-    if (appStore.isLoading) {
-        return <Spin />;
-    }
+const DefaultLayout: React.FC = () => {
+    const pageTitle = useSelector<RootState>(
+        state => state.app.pageTitle,
+    ) as string;
 
     return (
         <Router>
@@ -63,11 +33,14 @@ const DefaultLayout: React.FC = observer(() => {
                     onCollapse={(collapsed, type) => {
                         console.log(collapsed, type);
                     }}
+                    width={260}
                 >
-                    <div className="logo">
-                        <img src="/icon128.png" alt="logo" />
-                        <span>FABI Toolkit</span>
-                    </div>
+                    <Link to={'/'}>
+                        <div className="logo">
+                            <img src="/icon128.png" alt="logo" />
+                            <span>FABI Toolkit</span>
+                        </div>
+                    </Link>
                     <Menu theme="dark" mode="inline">
                         <Menu.Item icon={<HomeOutlined />}>
                             <Link to="/">Dashboard</Link>
@@ -86,6 +59,12 @@ const DefaultLayout: React.FC = observer(() => {
                                     Friends Remover
                                 </Link>
                             </Menu.Item>
+
+                            <Menu.Item>
+                                <Link to="/facebook/liked-page-stalk">
+                                    Liked Page Stalk
+                                </Link>
+                            </Menu.Item>
                         </Menu.SubMenu>
                     </Menu>
                 </Sider>
@@ -95,30 +74,31 @@ const DefaultLayout: React.FC = observer(() => {
                         style={{ padding: 0 }}
                     >
                         <div className="nav_profile">
-                            <Avatar
-                                src={`https://graph.facebook.com/${appStore?.facebookUserInfo?.uid}/picture?width=200&height=200&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`}
-                            />
-                            <Title level={5}>
-                                {appStore?.facebookUserInfo?.name}
-                            </Title>
+                            <div className="title">
+                                <Title level={3}>{pageTitle}</Title>
+                            </div>
+                            <div className="profile">
+                                <Avatar
+                                    size={'large'}
+                                    src={getFacebookAvatar('4')}
+                                />
+                                <Title level={5}></Title>
+                            </div>
                         </div>
                     </Header>
 
-                    <Content style={{ margin: '24px 16px 0' }}>
+                    <Content>
                         <div
                             className="site-layout-background"
-                            style={{ padding: 24, minHeight: 360 }}
+                            style={{ minHeight: 360 }}
                         >
                             <Routes>{routerList}</Routes>
                         </div>
                     </Content>
-                    <Footer style={{ textAlign: 'center' }}>
-                        FABI Toolkit by James Nguyen (jamesngdev)
-                    </Footer>
                 </Layout>
             </Layout>
         </Router>
     );
-});
+};
 
 export default DefaultLayout;

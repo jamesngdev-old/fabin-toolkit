@@ -8,7 +8,7 @@ export const useDashboard = (props: any) => {
 
     useEffect(() => {
         appStore.isLoading = true;
-        facebook.getUserInfo().then(info => {
+        facebook.getMe().then(info => {
             appStore.isLoading = false;
             appStore.facebookUserInfo = info;
         });

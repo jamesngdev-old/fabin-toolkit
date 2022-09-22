@@ -1,0 +1,35 @@
+.dashboard {
+    .welcome {
+        h3 {
+            font-size: 24px;
+        }
+
+        .ant-card-body {
+            padding-bottom: 0;
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        img {
+            height: 180px;
+        }
+    }
+
+    .toolOptions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        margin-top: -28px;
+        border-top: 1px solid #3a3b4a;
+        padding-top: 12px;
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+}

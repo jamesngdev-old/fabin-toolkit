@@ -21,6 +21,10 @@
                     "./src/dashboard/components"
                 ],
                 [
+                    "@assets",
+                    "./src/dashboard/assets"
+                ],
+                [
                     "@pages",
                     "./src/dashboard/pages"
                 ]

@@ -1,0 +1,41 @@
+.ant-layout-sider-children {
+    padding: 0 15px;
+}
+
+.ant-menu-item {
+    border-radius: 10px;
+    height: 42px;
+    font-size: 15px;
+}
+
+.ant-menu-dark .ant-menu-item:hover {
+    background: rgba(234, 234, 255, 0.08);
+}
+
+.nav_profile {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    transition: padding 0.25s ease-in-out 0s, box-shadow 0.25s ease-in-out 0s, backdrop-filter 0.25s ease-in-out 0s;
+    backdrop-filter: blur(8px);
+    box-shadow: rgb(20 21 33 / 42%) 0px 4px 8px -4px;
+    background-color: rgba(48, 51, 78, 0.9);
+}
+
+.ant-alert-info {
+    background-color: rgba(38, 198, 249, 0.12);
+    border: none;
+    border-radius: 8px;
+    color: rgb(59, 203, 249);
+}
+
+.ant-btn {
+    border-radius: 10px;
+}
+
+.ant-card {
+    border-radius: 12px;
+}
+
+.ant-picker-cell-in-view {
+    color: rgb(195 195 213);
+}

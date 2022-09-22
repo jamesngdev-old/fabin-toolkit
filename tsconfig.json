@@ -24,6 +24,9 @@
             "@pages/*": [
                 "src/dashboard/pages/*"
             ],
+            "@assets/*": [
+                "src/dashboard/assets/*"
+            ],
             "@redux/*": [
                 "src/dashboard/redux/*"
             ]
