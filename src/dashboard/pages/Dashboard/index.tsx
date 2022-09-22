@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, Col, Row, Switch } from 'antd';
 import './dashboard.scss';
 // @ts-ignore
 import personalImage from './../../assets/images/person-dashboard.png';
 import { Typography } from 'antd/es';
+import { SetPageTitle } from '@redux/actions';
+import { useDispatch } from 'react-redux';
 
 export default function Dashboard() {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(SetPageTitle('Dashboard'));
+    }, []);
+
     return (
         <div className="dashboard">
             <Row

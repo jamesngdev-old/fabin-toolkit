@@ -2,7 +2,7 @@ import Facebook, {
     FacebookUserInfo,
     InteractionMapValue,
 } from '@helpers/facebook';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { RangePickerProps } from 'antd/es/date-picker';
 import moment from 'moment';
 import { message } from 'antd';
@@ -19,10 +19,6 @@ export default function useInteractionStalk() {
     const [isFetchingTargetProfile, setIsFetchingTargetProfile] =
         useState<boolean>(false);
     const [interactors, setInteractors] = useState<InteractionMapValue[]>([]);
-    //
-    // useEffect(() => {
-    //     facebook.init();
-    // }, []);
 
     const onChangeProfile = useCallback(
         async (event: any) => {

@@ -1,23 +1,24 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { FriendInfo, Gender } from '@helpers/facebook';
 import {
     Alert,
     Avatar,
     Button,
-    Input,
-    Table,
     Card,
+    Col,
+    Input,
+    Row,
+    Table,
     Tag,
     Typography,
-    Row,
-    Col,
 } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import { useFriendsRemover } from '@hooks/Facebook/useFriendsRemover';
 import { SearchOutlined } from '@ant-design/icons';
 import './friendsRemover.scss';
-
 import * as moment from 'moment';
+import { SetPageTitle } from '@redux/actions';
+import { useDispatch } from 'react-redux';
 
 const { Text } = Typography;
 
@@ -27,6 +28,13 @@ const getMutualFriend = (text: string) => {
 
 export default function FriendsRemover() {
     const talonProps = useFriendsRemover();
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(SetPageTitle('Friends remove'));
+    }, []);
+
     const {
         friends,
         isLoading,

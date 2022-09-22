@@ -258,7 +258,6 @@ class Facebook {
                 const { node } = edge;
                 const { creation_time, feedback, id } = node;
                 const postId = atob(id).split(':').pop();
-                console.log('base64', atob(id));
 
                 const createTimeMoment = moment(creation_time * 1000);
 
@@ -306,6 +305,7 @@ class Facebook {
         let result: LikedPageNode[] = [];
         const { uid, fb_dtsg } = this.userInfo;
         let cursor = '';
+        const base64Id = btoa(`app_collection:${targetId}:2409997254:96`);
 
         while (true) {
             let query = {
@@ -316,7 +316,8 @@ class Facebook {
                 fb_api_caller_class: 'RelayModern',
                 fb_api_req_friendly_name:
                     'ProfileCometAppCollectionGridRendererPaginationQuery',
-                variables: `{"count":8,"cursor":"${cursor}","scale":1,"id":""}`,
+                variables: `{"count":8,"cursor":"${cursor}","scale":1,"id":"${base64Id}"}`,
+                doc_id: '2983410188445167',
             };
 
             const response = await this.graphQL(query);

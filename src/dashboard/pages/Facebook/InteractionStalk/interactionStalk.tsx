@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Avatar,
     Button,
@@ -15,7 +15,8 @@ import useInteractionStalk from '@hooks/Facebook/useInteractionStalk';
 import { getFacebookAvatar } from '@helpers/image';
 import TopReactors from '@pages/Facebook/InteractionStalk/TopReactors';
 import TopCommentors from '@pages/Facebook/InteractionStalk/TopCommentors';
-import { usePageTitle } from '@hooks/usePageTitle';
+import { SetPageTitle } from '@redux/actions';
+import { useDispatch } from 'react-redux';
 
 const { Title } = Typography;
 
@@ -25,7 +26,10 @@ const dateFormat = 'DD/MM/YYYY';
 export default function InteractionStalk() {
     const talonProps = useInteractionStalk();
 
-    usePageTitle({ title: 'Interaction Stalk' });
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(SetPageTitle('Interaction Stalk'));
+    }, []);
 
     const {
         isLoading,

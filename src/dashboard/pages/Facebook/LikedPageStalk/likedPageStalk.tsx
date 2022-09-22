@@ -1,22 +1,22 @@
-import React, { useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { FriendInfo, Gender } from '@helpers/facebook';
 import {
-    Alert,
     Avatar,
-    Button,
-    Input,
-    Table,
     Card,
-    Tag,
-    Typography,
-    Row,
     Col,
     Divider,
+    Input,
+    Row,
+    Table,
+    Tag,
+    Typography,
 } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import { SearchOutlined } from '@ant-design/icons';
 import './likedPageStalk.scss';
 import usePageLiked from '@hooks/Facebook/usePageLiked';
+import { SetPageTitle } from '@redux/actions';
+import { useDispatch } from 'react-redux';
 
 const { Text } = Typography;
 
@@ -24,9 +24,14 @@ const getMutualFriend = (text: string) => {
     return Number((text || '').split(' ')?.[0] || 0);
 };
 
-export default function LikedPageStalk() {
+const LikedPageStalk: React.FC = (() => {
     const talonProps = usePageLiked();
     const { isLoading, getLikedPage } = talonProps;
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(SetPageTitle('Like page stalk'));
+    }, []);
 
     const columns: ColumnsType<FriendInfo> = [
         {
@@ -34,17 +39,17 @@ export default function LikedPageStalk() {
             dataIndex: 'name',
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
                 return (
-                    <Input
-                        autoFocus
-                        placeholder="Search..."
-                        value={selectedKeys[0]}
-                        onChange={e => {
-                            const value = [e.target.value] || [];
-                            setSelectedKeys(value);
-                        }}
-                        onPressEnter={() => confirm()}
-                        onBlur={() => confirm()}
-                    />
+                  <Input
+                    autoFocus
+                    placeholder="Search..."
+                    value={selectedKeys[0]}
+                    onChange={e => {
+                        const value = [e.target.value] || [];
+                        setSelectedKeys(value);
+                    }}
+                    onPressEnter={() => confirm()}
+                    onBlur={() => confirm()}
+                  />
                 );
             },
             filterIcon: () => <SearchOutlined />,
@@ -52,14 +57,14 @@ export default function LikedPageStalk() {
                 return record.name.toLowerCase().includes(value.toLowerCase());
             },
             render: (text: string, row: FriendInfo) => (
-                <div className="profile">
-                    <Avatar src={row?.profile_picture?.uri} />
-                    <Text>
-                        <a href={row.url} target="_blank">
-                            {text}
-                        </a>
-                    </Text>
-                </div>
+              <div className="profile">
+                  <Avatar src={row?.profile_picture?.uri} />
+                  <Text>
+                      <a href={row.url} target="_blank">
+                          {text}
+                      </a>
+                  </Text>
+              </div>
             ),
         },
         {
@@ -88,8 +93,8 @@ export default function LikedPageStalk() {
                     return gender.includes(value);
                 } else {
                     return (
-                        !gender.includes(Gender.FEMALE) &&
-                        !gender.includes(Gender.MALE)
+                      !gender.includes(Gender.FEMALE) &&
+                      !gender.includes(Gender.MALE)
                     );
                 }
             },
@@ -108,8 +113,8 @@ export default function LikedPageStalk() {
             dataIndex: 'social_context',
             sorter: (a, b) => {
                 return (
-                    getMutualFriend(a?.social_context?.text) -
-                    getMutualFriend(b?.social_context?.text)
+                  getMutualFriend(a?.social_context?.text) -
+                  getMutualFriend(b?.social_context?.text)
                 );
             },
             render: (socialContext: any) => {
@@ -119,40 +124,48 @@ export default function LikedPageStalk() {
     ];
 
     return (
-        <div className="page interaction-stalk">
-            <Row
-                gutter={16}
-                style={{
-                    marginTop: '20px',
-                }}
-            >
-                <Col className="gutter-row" span={24}>
-                    <Card bordered={false}>
-                        <div className="friends-remover">
-                            <div className="top">
-                                <div className="left">
-                                    <Input.Search
-                                        placeholder="Facebook ID"
-                                        enterButton="Search"
-                                        size="large"
-                                        onSearch={getLikedPage}
-                                    />
-                                </div>
-                                <div className="right"></div>
-                            </div>
+      <div className="page interaction-stalk">
+          <Row
+            gutter={16}
+            style={{
+                marginTop: '20px',
+            }}
+          >
+              <Col className="gutter-row" span={24}>
+                  <Card bordered={false}>
+                      <div className="friends-remover">
+                          <div className="top">
+                              <div className="left">
+                                  <Input.Search
+                                    placeholder="Facebook ID"
+                                    enterButton="Search"
+                                    size="large"
+                                    onSearch={getLikedPage}
+                                  />
+                              </div>
+                              <div className="right"></div>
+                          </div>
 
-                            <Divider />
+                          <h1
+                            onClick={() => {
 
-                            <Table
-                                columns={columns}
-                                dataSource={[]}
-                                rowKey="id"
-                                loading={isLoading}
-                            />
-                        </div>
-                    </Card>
-                </Col>
-            </Row>
-        </div>
+                            }}
+                          >
+                          </h1>
+                          <Divider />
+
+                          <Table
+                            columns={columns}
+                            dataSource={[]}
+                            rowKey="id"
+                            loading={isLoading}
+                          />
+                      </div>
+                  </Card>
+              </Col>
+          </Row>
+      </div>
     );
-}
+});
+
+export default LikedPageStalk;

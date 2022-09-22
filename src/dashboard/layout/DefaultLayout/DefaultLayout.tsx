@@ -1,61 +1,25 @@
-import { FacebookFilled, HomeOutlined } from '@ant-design/icons';
-import { Avatar, Layout, Menu, Spin, Typography } from 'antd';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { HashRouter as Router, Link, Route, Routes } from 'react-router-dom';
-import Dashboard from '@pages/Dashboard';
-import InteractionStalk from '@pages/Facebook/InteractionStalk';
-import { observer } from 'mobx-react';
-import { AppStore } from '../../stores/app.store';
-import Facebook from '@helpers/facebook';
-import './defaultLayout.scss';
-import FriendsRemover from '@pages/Facebook/FriendsRemover';
+import { FacebookFilled, HomeOutlined } from '@ant-design/icons';
+import { Avatar, Layout, Menu, Typography } from 'antd';
+import routers from '../../routers';
 import { getFacebookAvatar } from '@helpers/image';
-import LikedPageStalk from '@pages/Facebook/LikedPageStalk';
+import { RootState } from '@redux/reducers';
+import './defaultLayout.scss';
+import { useSelector } from 'react-redux';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
-
-const routers = [
-    {
-        path: '/',
-        Component: Dashboard,
-        index: true,
-    },
-    {
-        path: '/facebook/interaction-scan',
-        Component: InteractionStalk,
-    },
-    {
-        path: '/facebook/friends-remover',
-        Component: FriendsRemover,
-    },
-    {
-        path: '/facebook/liked-page-stalk',
-        Component: LikedPageStalk,
-    },
-];
 
 const routerList = routers.map(router => {
     const { path, Component, ...additions } = router;
     return <Route path={path} element={<Component />} {...additions} />;
 });
 
-const appStore = new AppStore();
-
-const DefaultLayout: React.FC = observer(() => {
-    const facebook = new Facebook();
-
-    useEffect(() => {
-        // appStore.isLoading = true;
-        // facebook.getMe().then(info => {
-        //     appStore.isLoading = false;
-        //     appStore.facebookUserInfo = info;
-        // });
-    }, [appStore]);
-
-    if (appStore.isLoading) {
-        return <Spin />;
-    }
+const DefaultLayout: React.FC = () => {
+    const pageTitle = useSelector<RootState>(
+        state => state.app.pageTitle,
+    ) as string;
 
     return (
         <Router>
@@ -111,18 +75,14 @@ const DefaultLayout: React.FC = observer(() => {
                     >
                         <div className="nav_profile">
                             <div className="title">
-                                <Title level={3}>{appStore.pageTitle}</Title>
+                                <Title level={3}>{pageTitle}</Title>
                             </div>
                             <div className="profile">
                                 <Avatar
                                     size={'large'}
-                                    src={getFacebookAvatar(
-                                        appStore?.facebookUserInfo?.uid,
-                                    )}
+                                    src={getFacebookAvatar('4')}
                                 />
-                                <Title level={5}>
-                                    {appStore?.facebookUserInfo?.name}
-                                </Title>
+                                <Title level={5}></Title>
                             </div>
                         </div>
                     </Header>
@@ -139,6 +99,6 @@ const DefaultLayout: React.FC = observer(() => {
             </Layout>
         </Router>
     );
-});
+};
 
 export default DefaultLayout;

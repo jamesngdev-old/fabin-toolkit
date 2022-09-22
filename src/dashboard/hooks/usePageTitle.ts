@@ -1,18 +1,16 @@
+import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { AppStore } from '../stores/app.store';
+import { SetPageTitle } from '@redux/actions';
 
 interface IProps {
     title: string;
 }
 
 export const usePageTitle = (props: IProps) => {
-    const appStore = new AppStore();
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        appStore.setPageTitle(props.title);
-        return () => {
-            appStore.pageTitle = '';
-        };
-    }, [appStore]);
+        dispatch(SetPageTitle(props.title));
+    }, []);
     return {};
 };
